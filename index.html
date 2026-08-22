@@ -40,82 +40,95 @@
     </div>
     <div class="spinner" id="spinner"></div>
     <h1>Jobs</h1>
-    <p>Redirecting you to WhatsApp...</p>
+    <p id="sub">Redirecting you to WhatsApp...</p>
     <a class="btn hidden" id="manual" href="#">Open WhatsApp</a>
   </div>
 
 <script>
-  var AGENTS = [{"label": "Agent 1", "phone": "905533299126", "weight": 1}, {"label": "Agent 2", "phone": "905064565376", "weight": 1}, {"label": "Agent 3", "phone": "905060588521", "weight": 1}, {"label": "Agent 4", "phone": "905076918931", "weight": 1}, {"label": "Agent 5", "phone": "905076918924", "weight": 1}, {"label": "Agent 6", "phone": "905058151468", "weight": 1}, {"label": "Agent 7", "phone": "905533299681", "weight": 1}, {"label": "Agent 8", "phone": "905053661824", "weight": 1}, {"label": "Agent 9", "phone": "905075195985", "weight": 1}, {"label": "Agent 10", "phone": "905011089426", "weight": 1}, {"label": "Agent 11", "phone": "905050129325", "weight": 1}, {"label": "Agent 12", "phone": "905530415721", "weight": 1}, {"label": "Agent 13", "phone": "905533299554", "weight": 1}, {"label": "Agent 14", "phone": "905533299547", "weight": 1}, {"label": "Agent 15", "phone": "905075196148", "weight": 1}, {"label": "Agent 16", "phone": "905536064717", "weight": 1}, {"label": "Agent 17", "phone": "905060589611", "weight": 1}, {"label": "Agent 18", "phone": "905533299545", "weight": 1}, {"label": "Agent 19", "phone": "905536065315", "weight": 1}, {"label": "Agent 20", "phone": "905533296976", "weight": 1}, {"label": "Agent 21", "phone": "905536064636", "weight": 1}, {"label": "Agent 22", "phone": "905536061771", "weight": 1}, {"label": "Agent 23", "phone": "905536065616", "weight": 1}, {"label": "Agent 24", "phone": "905077854846", "weight": 1}, {"label": "Agent 25", "phone": "905079321873", "weight": 1}, {"label": "Agent 26", "phone": "905469035935", "weight": 1}, {"label": "Agent 27", "phone": "905078599941", "weight": 1}, {"label": "Agent 28", "phone": "905536065614", "weight": 1}, {"label": "Agent 29", "phone": "905078592112", "weight": 1}, {"label": "Agent 30", "phone": "905078600098", "weight": 1}, {"label": "Agent 31", "phone": "905535347476", "weight": 1}, {"label": "Agent 32", "phone": "905533299564", "weight": 1}, {"label": "Agent 33", "phone": "905011089526", "weight": 1}, {"label": "Agent 34", "phone": "355683367259", "weight": 1}, {"label": "Agent 35", "phone": "355684003735", "weight": 1}, {"label": "Agent 36", "phone": "355685344795", "weight": 1}, {"label": "Agent 37", "phone": "355685055556", "weight": 1}, {"label": "Agent 38", "phone": "355682101785", "weight": 1}, {"label": "Agent 39", "phone": "355685655077", "weight": 1}, {"label": "Agent 40", "phone": "355686608592", "weight": 1}, {"label": "Agent 41", "phone": "355689052927", "weight": 1}, {"label": "Agent 42", "phone": "355684047545", "weight": 1}];
-  var MESSAGE = "Hello, I am interested your job! REF: JOBS0198";
-  var MODE = "round-robin";
-  // Merkezi sıra sayacı: round-robin tüm ziyaretçiler arasında ortak sırayla
-  // dağıtır (Supabase RPC, atomik artış). Ulaşılamazsa random'a düşer.
-  var RPC_URL = "https://zmdbafqjtqlenleocukz.supabase.co/rest/v1/rpc/wa_next";
-  var RPC_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InptZGJhZnFqdHFsZW5sZW9jdWt6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NzA0NDMsImV4cCI6MjA5MzA0NjQ0M30.bVUMLSwi37WlltqdZYVIkpIJUHgXnECYvSaj3C4iQtE";
+  // Kaynak-i-hakikat: Supabase wa_sites (slug bazli). Asagidakiler yalniz YEDEK.
+  var SLUG = "jobs";
+  var REST = "https://zmdbafqjtqlenleocukz.supabase.co/rest/v1";
+  var KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InptZGJhZnFqdHFsZW5sZW9jdWt6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NzA0NDMsImV4cCI6MjA5MzA0NjQ0M30.bVUMLSwi37WlltqdZYVIkpIJUHgXnECYvSaj3C4iQtE";
+  var FB_AGENTS = [{"phone": "905533299126", "weight": 1}, {"phone": "905064565376", "weight": 1}, {"phone": "905060588521", "weight": 1}, {"phone": "905076918931", "weight": 1}, {"phone": "905076918924", "weight": 1}, {"phone": "905058151468", "weight": 1}, {"phone": "905533299681", "weight": 1}, {"phone": "905053661824", "weight": 1}, {"phone": "905075195985", "weight": 1}, {"phone": "905011089426", "weight": 1}, {"phone": "905050129325", "weight": 1}, {"phone": "905530415721", "weight": 1}, {"phone": "905533299554", "weight": 1}, {"phone": "905533299547", "weight": 1}, {"phone": "905075196148", "weight": 1}, {"phone": "905536064717", "weight": 1}, {"phone": "905060589611", "weight": 1}, {"phone": "905533299545", "weight": 1}, {"phone": "905536065315", "weight": 1}, {"phone": "905533296976", "weight": 1}, {"phone": "905536064636", "weight": 1}, {"phone": "905536061771", "weight": 1}, {"phone": "905536065616", "weight": 1}, {"phone": "905077854846", "weight": 1}, {"phone": "905079321873", "weight": 1}, {"phone": "905469035935", "weight": 1}, {"phone": "905078599941", "weight": 1}, {"phone": "905536065614", "weight": 1}, {"phone": "905078592112", "weight": 1}, {"phone": "905078600098", "weight": 1}, {"phone": "905535347476", "weight": 1}, {"phone": "905533299564", "weight": 1}, {"phone": "905011089526", "weight": 1}, {"phone": "355683367259", "weight": 1}, {"phone": "355684003735", "weight": 1}, {"phone": "355685344795", "weight": 1}, {"phone": "355685055556", "weight": 1}, {"phone": "355682101785", "weight": 1}, {"phone": "355685655077", "weight": 1}, {"phone": "355686608592", "weight": 1}, {"phone": "355689052927", "weight": 1}, {"phone": "355684047545", "weight": 1}];       // yedek numara listesi
+  var FB_MSG = "Hello, I am interested your job! REF: JOBS0198";         // yedek mesaj
+  var FB_MODE = "round-robin";           // yedek mod
+  var NOAGENT = "No agent configured yet.";
 
   function pickWeighted(list) {
     var total = 0, i;
     for (i = 0; i < list.length; i++) total += (list[i].weight || 1);
     var r = Math.random() * total;
-    for (i = 0; i < list.length; i++) {
-      r -= (list[i].weight || 1);
-      if (r <= 0) return list[i];
-    }
+    for (i = 0; i < list.length; i++) { r -= (list[i].weight || 1); if (r <= 0) return list[i]; }
     return list[list.length - 1];
   }
-
-  function pickLocal() {
-    if (MODE === "weighted") return pickWeighted(AGENTS);
-    return AGENTS[Math.floor(Math.random() * AGENTS.length)];
+  function localPick(agents, mode) {
+    if (mode === "weighted") return pickWeighted(agents);
+    return agents[Math.floor(Math.random() * agents.length)];
   }
-
-  function finish(agent) {
-    var url = "https://wa.me/" + agent.phone +
-              (MESSAGE ? "?text=" + encodeURIComponent(MESSAGE) : "");
+  function toAgents(nums) {
+    return (nums || []).map(function (n) {
+      return { phone: String(n).replace(/\D/g, ""), weight: 1 };
+    }).filter(function (a) { return a.phone; });
+  }
+  function redirect(agent, msg) {
+    var url = "https://wa.me/" + agent.phone + (msg ? "?text=" + encodeURIComponent(msg) : "");
     var btn = document.getElementById("manual");
     btn.href = url;
-    // Otomatik yönlendir; engellenirse manuel buton görünür kalsın
     setTimeout(function () {
       document.getElementById("spinner").classList.add("hidden");
       btn.classList.remove("hidden");
     }, 1500);
     window.location.replace(url);
   }
-
-  if (!AGENTS.length) {
+  function noAgents() {
     document.getElementById("spinner").classList.add("hidden");
-    document.querySelector("p").textContent = "No agent configured yet.";
-  } else if (MODE === "round-robin" && AGENTS.length > 1) {
-    var ctrl = ("AbortController" in window) ? new AbortController() : null;
-    var timer = ctrl && setTimeout(function () { ctrl.abort(); }, 2000);
-    fetch(RPC_URL, {
-      method: "POST",
-      headers: { "apikey": RPC_KEY, "Authorization": "Bearer " + RPC_KEY,
-                  "Content-Type": "application/json" },
-      body: JSON.stringify({ p_site: location.host + location.pathname }),
-      signal: ctrl ? ctrl.signal : undefined
-    })
-      .then(function (r) { return r.json(); })
-      .then(function (n) {
-        if (timer) clearTimeout(timer);
-        n = parseInt(n, 10);
-        finish(AGENTS[(isNaN(n) || n < 0 ? 0 : n) % AGENTS.length]);
-      })
-      .catch(function () { if (timer) clearTimeout(timer); finish(pickLocal()); });
-  } else {
-    // Tek agent / random / weighted: sonucu beklemeye gerek yok — sayaci
-    // arka planda artir (keepalive: sayfa kapansa da istek tamamlanir).
-    try {
-      fetch(RPC_URL, {
-        method: "POST",
-        headers: { "apikey": RPC_KEY, "Authorization": "Bearer " + RPC_KEY,
-                    "Content-Type": "application/json" },
-        body: JSON.stringify({ p_site: location.host + location.pathname }),
-        keepalive: true
-      }).catch(function () {});
-    } catch (e) {}
-    finish(MODE === "round-robin" ? AGENTS[0] : pickLocal());
+    document.getElementById("sub").textContent = NOAGENT;
   }
+
+  var done = false;
+  function finish(agents, msg, mode, counter) {
+    if (done) return; done = true;
+    if (!agents.length) { noAgents(); return; }
+    if (mode === "round-robin" && agents.length > 1 && counter != null && !isNaN(counter)) {
+      var i = ((counter % agents.length) + agents.length) % agents.length;
+      redirect(agents[i], msg);
+    } else {
+      redirect(mode === "round-robin" ? agents[0] : localPick(agents, mode), msg);
+    }
+  }
+
+  var ctrl = ("AbortController" in window) ? new AbortController() : null;
+  var sig = ctrl ? ctrl.signal : undefined;
+  var timer = setTimeout(function () {
+    if (ctrl) ctrl.abort();
+    finish(FB_AGENTS, FB_MSG, FB_MODE, null);   // DB yavas -> yedekle git
+  }, 2500);
+
+  var pConf = fetch(REST + "/wa_sites?slug=eq." + encodeURIComponent(SLUG) +
+                    "&select=numbers,message,mode",
+      { headers: { apikey: KEY, Authorization: "Bearer " + KEY }, signal: sig })
+    .then(function (r) { return r.json(); })
+    .then(function (rows) {
+      var c = rows && rows[0];
+      if (!c) return { agents: FB_AGENTS, msg: FB_MSG, mode: FB_MODE };
+      var a = toAgents(c.numbers);
+      return { agents: a.length ? a : FB_AGENTS,
+               msg: (c.message != null) ? c.message : FB_MSG,
+               mode: c.mode || FB_MODE };
+    })
+    .catch(function () { return { agents: FB_AGENTS, msg: FB_MSG, mode: FB_MODE }; });
+
+  var pCount = fetch(REST + "/rpc/wa_next", { method: "POST",
+      headers: { apikey: KEY, Authorization: "Bearer " + KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ p_site: location.host + location.pathname }), signal: sig })
+    .then(function (r) { return r.json(); })
+    .then(function (n) { return parseInt(n, 10); })
+    .catch(function () { return null; });
+
+  Promise.all([pConf, pCount]).then(function (res) {
+    clearTimeout(timer);
+    finish(res[0].agents, res[0].msg, res[0].mode, res[1]);
+  });
 </script>
 </body>
 </html>
